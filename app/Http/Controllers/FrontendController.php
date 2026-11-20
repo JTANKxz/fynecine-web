@@ -92,14 +92,13 @@ class FrontendController extends Controller
         return view('frontend.episode', compact('serie', 'season', 'episode', 'otherEpisodes', 'prevEp', 'nextEp'));
     }
 
-    public function search(Request $request)
+    public function search(Request $request, $genreSlug = null)
     {
         $query = $request->input('q');
         $categoria = $request->input('categoria', 'todos');
-        $genero = $request->input('genero', 'todos');
+        $genero = $genreSlug ?: $request->input('genero', 'todos');
         $ano = $request->input('ano', '');
-        $avaliacao = $request->input('avaliacao', '');
-        $duracao = $request->input('duracao', '');
+        $avaliacao = $request->input('avaliacao', 'padrao');
         
         $limit = 24;
         
@@ -111,8 +110,6 @@ class FrontendController extends Controller
             $mQuery = Movie::query();
             if ($query) $mQuery->where('title', 'LIKE', "%{$query}%");
             if ($ano && $ano !== 'todos') $mQuery->where('release_year', $ano);
-            if ($avaliacao && $avaliacao !== '0') $mQuery->where('rating', '>=', $avaliacao);
-            if ($duracao && $duracao !== '0') $mQuery->where('runtime', '<=', $duracao);
             if ($genero && $genero !== 'todos') {
                 $mQuery->whereHas('genres', function($q) use ($genero) {
                     $q->where('slug', strtolower($genero));
@@ -125,7 +122,7 @@ class FrontendController extends Controller
             } elseif ($categoria === 'filmes') {
                 $mQuery->whereNull('content_category_id');
             }
-            $movies = $mQuery->latest()->get();
+            $movies = $mQuery->get();
         }
 
         // Query Series
@@ -133,13 +130,11 @@ class FrontendController extends Controller
             $sQuery = Serie::query();
             if ($query) $sQuery->where('name', 'LIKE', "%{$query}%");
             if ($ano && $ano !== 'todos') $sQuery->where('first_air_year', $ano);
-            if ($avaliacao && $avaliacao !== '0') $sQuery->where('rating', '>=', $avaliacao);
             if ($genero && $genero !== 'todos') {
                 $sQuery->whereHas('genres', function($q) use ($genero) {
                     $q->where('slug', strtolower($genero));
                 });
             }
-            // duracao mostly applies to movies, but we can ignore for series or filter by episode length if it existed.
             if ($categoria === 'animes') {
                 $sQuery->whereHas('contentCategory', function($q) {
                     $q->where('slug', 'like', '%anime%');
@@ -147,11 +142,18 @@ class FrontendController extends Controller
             } elseif ($categoria === 'series') {
                 $sQuery->whereNull('content_category_id');
             }
-            $series = $sQuery->latest()->get();
+            $series = $sQuery->get();
         }
 
-        // Combine and Paginate manually
-        $all = $movies->concat($series)->sortByDesc('created_at')->values();
+        // Ordenação por avaliação ou mais recentes
+        $all = $movies->concat($series);
+        if ($avaliacao === 'maior') {
+            $all = $all->sortByDesc(fn($item) => (float)($item->rating ?? $item->vote_average ?? 0))->values();
+        } elseif ($avaliacao === 'menor') {
+            $all = $all->sortBy(fn($item) => (float)($item->rating ?? $item->vote_average ?? 0))->values();
+        } else {
+            $all = $all->sortByDesc('created_at')->values();
+        }
         
         $page = $request->input('page', 1);
         $total = $all->count();
@@ -165,21 +167,20 @@ class FrontendController extends Controller
             ['path' => $request->url(), 'query' => $request->query()]
         );
 
-        return view('frontend.search', compact('results', 'query', 'categoria', 'genero', 'ano', 'avaliacao', 'duracao'));
+        $genreModel = null;
+        if ($genero && $genero !== 'todos') {
+            $genreModel = Genre::where('slug', $genero)->first();
+        }
+
+        $genresList = Genre::orderBy('name')->get();
+
+        return view('frontend.search', compact('results', 'query', 'categoria', 'genero', 'ano', 'avaliacao', 'genreModel', 'genresList'));
     }
 
     public function genre($slug)
     {
-        $genre = Genre::where('slug', $slug)->firstOrFail();
-        $movies = Movie::whereHas('genres', fn($q) => $q->where('genres.id', $genre->id))->latest()->paginate(24);
-        $series = Serie::whereHas('genres', fn($q) => $q->where('genres.id', $genre->id))->latest()->paginate(24);
-        
-        return view('frontend.browse', [
-            'title' => "Gênero: {$genre->name}",
-            'movies' => $movies,
-            'series' => $series,
-            'description' => "Assistir filmes e séries de {$genre->name} online grátis."
-        ]);
+        Genre::where('slug', $slug)->firstOrFail();
+        return $this->search(request(), $slug);
     }
 
     public function network($slug)

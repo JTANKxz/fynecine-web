@@ -10,6 +10,50 @@
     <meta property="og:locale" content="pt_BR" />
     <title>@yield('title', (\App\Models\AppConfig::getSettings()->app_name ?? 'FyneCine') . ' - Assistir Filmes e Séries Online Grátis')</title>
     @yield('seo')
+
+    <!-- Estrutura Schema.org WebSite & Sitelinks para Google -->
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@graph": [
+        {
+          "@@type": "WebSite",
+          "@@id": "{{ url('/') }}#website",
+          "url": "{{ url('/') }}",
+          "name": "{{ \App\Models\AppConfig::getSettings()->app_name ?? 'FyneCine' }}",
+          "alternateName": ["Fyne Cine", "FyneCine Online", "FyneCine Filmes e Séries", "FyneCine APK"],
+          "description": "Assista a filmes e séries online grátis em HD. Plataforma completa com lançamentos, catálogo dublado e legendado e download de aplicativo.",
+          "inLanguage": "pt-BR",
+          "potentialAction": {
+            "@@type": "SearchAction",
+            "target": {
+              "@@type": "EntryPoint",
+              "urlTemplate": "{{ url('/busca') }}?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@@type": "SiteNavigationElement",
+          "@@id": "{{ url('/') }}#sitelinks",
+          "name": [
+            "Início",
+            "Filmes Online",
+            "Séries Online",
+            "Explorar Catálogo",
+            "Baixar Aplicativo"
+          ],
+          "url": [
+            "{{ url('/') }}",
+            "{{ url('/busca?categoria=filmes') }}",
+            "{{ url('/busca?categoria=series') }}",
+            "{{ url('/busca') }}",
+            "{{ url('/baixar-app') }}"
+          ]
+        }
+      ]
+    }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
         /* ----- RESET & BASE - TEMA AMOLED + ROXO SEM NEON ----- */
@@ -192,6 +236,7 @@
             background: none;
             font-family: inherit;
             padding: 0 8px;
+            text-decoration: none;
         }
         .nav-item i {
             font-size: 22px;
@@ -385,15 +430,30 @@
 
     @yield('content')
 
-    <!-- MENU INFERIOR -->
-    <nav class="bottom-nav">
-        <button class="nav-item @yield('nav_home_active')" data-tab="home" onclick="window.location.href='{{ route('home') }}'"><i class="fas fa-home"></i><span>Início</span></button>
-        <button class="nav-item @yield('nav_app_active')" data-tab="app" onclick="window.location.href='{{ route('frontend.app-download') }}'"><i class="fas fa-download"></i><span>APP</span></button>
-        <button class="nav-item @yield('nav_catalogo_active')" data-tab="catalogo" onclick="window.location.href='{{ route('frontend.search') }}'"><i class="fas fa-compass"></i><span>Explorar</span></button>
-        {{-- Minha Lista - em desenvolvimento --}}
-        {{-- <button class="nav-item" data-tab="lista" onclick="window.location.href='{{ auth()->check() ? route('login') : route('login') }}'"><i class="fas fa-list"></i><span>Minha Lista</span></button> --}}
-        {{-- Perfil - em desenvolvimento --}}
-        {{-- <button class="nav-item" data-tab="perfil" onclick="window.location.href='{{ route('login') }}'"><i class="fas fa-user"></i><span>Perfil</span></button> --}}
+    <!-- MENU INFERIOR (SEMÂNTICO COM SITELINKS DO GOOGLE) -->
+    @php
+        $isFilmes = request('categoria') === 'filmes';
+        $isSeries = request('categoria') === 'series';
+        $isApp = request()->routeIs('frontend.app-download');
+        $isHome = request()->routeIs('home');
+        $isBuscaGeral = request()->routeIs('frontend.search') && !$isFilmes && !$isSeries;
+    @endphp
+    <nav class="bottom-nav" aria-label="Navegação Principal">
+        <a href="{{ route('home') }}" class="nav-item {{ $isHome ? 'active' : '' }}" data-tab="home" aria-label="Página Inicial">
+            <i class="fas fa-home"></i><span>Início</span>
+        </a>
+        <a href="{{ route('frontend.search', ['categoria' => 'filmes']) }}" class="nav-item {{ $isFilmes ? 'active' : '' }}" data-tab="filmes" aria-label="Filmes Online Grátis">
+            <i class="fas fa-film"></i><span>Filmes</span>
+        </a>
+        <a href="{{ route('frontend.search', ['categoria' => 'series']) }}" class="nav-item {{ $isSeries ? 'active' : '' }}" data-tab="series" aria-label="Séries Online Grátis">
+            <i class="fas fa-tv"></i><span>Séries</span>
+        </a>
+        <a href="{{ route('frontend.search') }}" class="nav-item {{ $isBuscaGeral ? 'active' : '' }}" data-tab="catalogo" aria-label="Explorar Catálogo de Filmes e Séries">
+            <i class="fas fa-compass"></i><span>Explorar</span>
+        </a>
+        <a href="{{ route('frontend.app-download') }}" class="nav-item {{ $isApp ? 'active' : '' }}" data-tab="app" aria-label="Baixar Aplicativo Android">
+            <i class="fas fa-download"></i><span>Baixar App</span>
+        </a>
     </nav>
 
     <!-- CARD FLUTUANTE -->

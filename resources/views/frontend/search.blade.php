@@ -1,7 +1,58 @@
 @extends('layouts.fyne')
 
-@section('title', 'FYNECINE - Catálogo')
-@section('nav_explorar_active', 'active')
+@php
+    $siteName = \App\Models\AppConfig::getSettings()->app_name ?? 'FyneCine';
+    $genreName = isset($genreModel) && $genreModel ? $genreModel->name : ($genero && $genero !== 'todos' ? ucfirst($genero) : null);
+    
+    if ($genreName) {
+        $pageTitle = 'Filmes e Séries de ' . $genreName . ' Online Grátis Dublado HD - ' . $siteName;
+        $pageDesc = 'Assista aos melhores filmes e séries de ' . $genreName . ' online grátis em Full HD dublado e legendado. Catálogo completo de ' . $genreName . ' atualizado no ' . $siteName . '!';
+        $pageUrl = url('/genero/' . ($genreModel->slug ?? $genero));
+    } elseif (!empty($query)) {
+        $pageTitle = 'Busca por "' . e($query) . '" - ' . $siteName;
+        $pageDesc = 'Resultados de filmes e séries encontrados para "' . e($query) . '" no ' . $siteName . '. Assista online grátis em alta definição!';
+        $pageUrl = url()->full();
+    } elseif ($categoria && $categoria !== 'todos') {
+        $pageTitle = 'Assistir ' . ucfirst($categoria) . ' Online Grátis Dublado HD - ' . $siteName;
+        $pageDesc = 'Catálogo completo de ' . $categoria . ' online grátis dublado e legendado em Full HD no ' . $siteName . '.';
+        $pageUrl = url()->full();
+    } else {
+        $pageTitle = 'Explorar Catálogo de Filmes e Séries Online - ' . $siteName;
+        $pageDesc = 'Explore o catálogo completo de lançamentos, filmes, séries e animes online grátis dublado e legendado em Full HD no ' . $siteName . '.';
+        $pageUrl = url('/busca');
+    }
+@endphp
+
+@section('title', $pageTitle)
+@section('nav_catalogo_active', 'active')
+
+@section('seo')
+    <meta name="description" content="{{ $pageDesc }}">
+    <meta name="keywords" content="assistir filmes online, series online, {{ $genreName ? 'filmes de ' . strtolower($genreName) . ', series de ' . strtolower($genreName) . ', assistir ' . strtolower($genreName) . ' online, ' : '' }}catalogo de filmes, fynecine">
+    <link rel="canonical" href="{{ $pageUrl }}">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="{{ $pageTitle }}">
+    <meta property="og:description" content="{{ $pageDesc }}">
+    <meta property="og:url" content="{{ $pageUrl }}">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $pageTitle }}">
+    <meta name="twitter:description" content="{{ $pageDesc }}">
+
+    <!-- Schema.org CollectionPage JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "CollectionPage",
+      "name": "{{ $pageTitle }}",
+      "description": "{{ $pageDesc }}",
+      "url": "{{ $pageUrl }}"
+    }
+    </script>
+@endsection
 
 @section('styles')
 <style>
@@ -383,7 +434,6 @@
             <input type="hidden" name="genero" id="inputGenero" value="{{ $genero }}">
             <input type="hidden" name="ano" id="inputAno" value="{{ $ano }}">
             <input type="hidden" name="avaliacao" id="inputAvaliacao" value="{{ $avaliacao }}">
-            <input type="hidden" name="duracao" id="inputDuracao" value="{{ $duracao }}">
         </form>
 
         <!-- Categorias (scroll lateral) + Filtro -->
@@ -439,14 +489,22 @@
                 <label>Gênero</label>
                 <div class="opcoes-scroll" id="filtroGenero">
                     <div class="opcao {{ $genero == 'todos' || empty($genero) ? 'active' : '' }}" data-val="todos">Todos</div>
-                    <div class="opcao {{ $genero == 'acao' ? 'active' : '' }}" data-val="acao">Ação</div>
-                    <div class="opcao {{ $genero == 'aventura' ? 'active' : '' }}" data-val="aventura">Aventura</div>
-                    <div class="opcao {{ $genero == 'comedia' ? 'active' : '' }}" data-val="comedia">Comédia</div>
-                    <div class="opcao {{ $genero == 'drama' ? 'active' : '' }}" data-val="drama">Drama</div>
-                    <div class="opcao {{ $genero == 'fantasia' ? 'active' : '' }}" data-val="fantasia">Fantasia</div>
-                    <div class="opcao {{ $genero == 'ficcao' ? 'active' : '' }}" data-val="ficcao">Ficção Científica</div>
-                    <div class="opcao {{ $genero == 'suspense' ? 'active' : '' }}" data-val="suspense">Suspense</div>
-                    <div class="opcao {{ $genero == 'terror' ? 'active' : '' }}" data-val="terror">Terror</div>
+                    @if(isset($genresList) && $genresList->count() > 0)
+                        @foreach($genresList as $g)
+                            <div class="opcao {{ strtolower($genero) == strtolower($g->slug) ? 'active' : '' }}" data-val="{{ $g->slug }}">{{ $g->name }}</div>
+                        @endforeach
+                    @else
+                        <div class="opcao {{ $genero == 'acao' ? 'active' : '' }}" data-val="acao">Ação</div>
+                        <div class="opcao {{ $genero == 'animacao' ? 'active' : '' }}" data-val="animacao">Animação</div>
+                        <div class="opcao {{ $genero == 'aventura' ? 'active' : '' }}" data-val="aventura">Aventura</div>
+                        <div class="opcao {{ $genero == 'comedia' ? 'active' : '' }}" data-val="comedia">Comédia</div>
+                        <div class="opcao {{ $genero == 'drama' ? 'active' : '' }}" data-val="drama">Drama</div>
+                        <div class="opcao {{ $genero == 'fantasia' ? 'active' : '' }}" data-val="fantasia">Fantasia</div>
+                        <div class="opcao {{ $genero == 'ficcao' ? 'active' : '' }}" data-val="ficcao">Ficção Científica</div>
+                        <div class="opcao {{ $genero == 'romance' ? 'active' : '' }}" data-val="romance">Romance</div>
+                        <div class="opcao {{ $genero == 'suspense' ? 'active' : '' }}" data-val="suspense">Suspense</div>
+                        <div class="opcao {{ $genero == 'terror' ? 'active' : '' }}" data-val="terror">Terror</div>
+                    @endif
                 </div>
             </div>
 
@@ -463,27 +521,11 @@
 
             <!-- Avaliação -->
             <div class="filtro-grupo">
-                <label>Avaliação (mínima)</label>
+                <label>Avaliação</label>
                 <div class="opcoes-scroll" id="filtroNota">
-                    <div class="opcao {{ $avaliacao == '0' || empty($avaliacao) ? 'active' : '' }}" data-val="0">Todas</div>
-                    <div class="opcao {{ $avaliacao == '9' ? 'active' : '' }}" data-val="9">9+ ⭐</div>
-                    <div class="opcao {{ $avaliacao == '8' ? 'active' : '' }}" data-val="8">8+ ⭐</div>
-                    <div class="opcao {{ $avaliacao == '7' ? 'active' : '' }}" data-val="7">7+ ⭐</div>
-                    <div class="opcao {{ $avaliacao == '6' ? 'active' : '' }}" data-val="6">6+ ⭐</div>
-                    <div class="opcao {{ $avaliacao == '5' ? 'active' : '' }}" data-val="5">5+ ⭐</div>
-                </div>
-            </div>
-
-            <!-- Duração (minutos) -->
-            <div class="filtro-grupo">
-                <label>Duração (minutos)</label>
-                <div class="opcoes-scroll" id="filtroDuracao">
-                    <div class="opcao {{ $duracao == '0' || empty($duracao) ? 'active' : '' }}" data-val="0">Todas</div>
-                    <div class="opcao {{ $duracao == '30' ? 'active' : '' }}" data-val="30">Até 30 min</div>
-                    <div class="opcao {{ $duracao == '60' ? 'active' : '' }}" data-val="60">Até 60 min</div>
-                    <div class="opcao {{ $duracao == '90' ? 'active' : '' }}" data-val="90">Até 90 min</div>
-                    <div class="opcao {{ $duracao == '120' ? 'active' : '' }}" data-val="120">Até 120 min</div>
-                    <div class="opcao {{ $duracao == '180' ? 'active' : '' }}" data-val="180">Até 180 min</div>
+                    <div class="opcao {{ $avaliacao == 'padrao' || empty($avaliacao) ? 'active' : '' }}" data-val="padrao">Padrão (Recentes)</div>
+                    <div class="opcao {{ $avaliacao == 'maior' ? 'active' : '' }}" data-val="maior">Maior Avaliação (⭐ 10 → 0)</div>
+                    <div class="opcao {{ $avaliacao == 'menor' ? 'active' : '' }}" data-val="menor">Menor Avaliação (⭐ 0 → 10)</div>
                 </div>
             </div>
 
@@ -542,13 +584,11 @@
     setupFilterGroup('filtroGenero', 'inputGenero');
     setupFilterGroup('filtroAno', 'inputAno');
     setupFilterGroup('filtroNota', 'inputAvaliacao');
-    setupFilterGroup('filtroDuracao', 'inputDuracao');
 
     document.getElementById('limparFiltros').addEventListener('click', () => {
         document.getElementById('inputGenero').value = 'todos';
         document.getElementById('inputAno').value = 'todos';
-        document.getElementById('inputAvaliacao').value = '0';
-        document.getElementById('inputDuracao').value = '0';
+        document.getElementById('inputAvaliacao').value = 'padrao';
         document.getElementById('filterForm').submit();
     });
 
