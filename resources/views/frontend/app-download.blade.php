@@ -1,17 +1,17 @@
 @extends('layouts.fyne')
 
-@section('title', 'Baixar ' . ($settings->app_name ?? 'FyneCine') . ' APK Oficial - Filmes, Séries, TV ao Vivo e Esportes para Android')
+@section('title', 'Baixar ' . ($settings->app_name ?? 'FyneCine') . ' APK Oficial - Filmes, Séries, Canais ao Vivo e Esportes para Android')
 @section('nav_app_active', 'active')
 
 @section('seo')
     @php
         $siteName = $settings->app_name ?? 'FyneCine';
-        $appTitle = 'Baixar ' . $siteName . ' APK Oficial - Filmes, Séries, TV ao Vivo e Transmissão para TV';
-        $appDesc = 'Baixe o aplicativo oficial ' . $siteName . ' APK para Android. Milhares de filmes, séries, canais ao vivo de esportes e filmes com suporte a transmissão direta para Smart TV!';
+        $appTitle = 'Baixar ' . $siteName . ' APK Oficial - Filmes, Séries, Canais ao Vivo e Esportes para Android';
+        $appDesc = 'Baixe o aplicativo oficial ' . $siteName . ' APK para Android. Assista a filmes, séries, canais ao vivo, esportes e transmita para sua TV. Tudo grátis em Full HD!';
         $appImage = asset('img/logo.png');
     @endphp
     <meta name="description" content="{{ $appDesc }}">
-    <meta name="keywords" content="baixar fynecine, fynecine apk, app filmes e series, canais ao vivo android, canais de esportes apk, transmitir para tv, filmes online apk">
+    <meta name="keywords" content="baixar fynecine, fynecine apk, app filmes e series, aplicativo de filmes gratis android, canais ao vivo apk, app esportes ao vivo, transmitir para tv, filmes online apk">
     <link rel="canonical" href="{{ url('/baixar-app') }}">
 
     <!-- Open Graph / WhatsApp / Telegram -->
@@ -286,12 +286,6 @@
         margin: 0;
     }
 
-    @media (max-width: 992px) {
-        .features-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
     @media (max-width: 768px) {
         .app-card-main {
             padding: 36px 20px;
@@ -301,7 +295,7 @@
             font-size: 26px;
         }
         .features-grid {
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 12px;
         }
         .steps-grid {
@@ -313,13 +307,20 @@
             gap: 6px;
         }
     }
+    @media (max-width: 420px) {
+        .features-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 @endsection
 
 @section('content')
 <div class="app-hero-section">
     <div class="app-card-main">
-
+        <div class="app-badge-status">
+            <i class="fas fa-circle"></i> Versão Oficial 100% Segura
+        </div>
 
         <div class="app-icon-wrapper">
             <i class="fab fa-android"></i>
@@ -328,7 +329,7 @@
         <h1 class="app-hero-title">Aplicativo {{ $settings->app_name ?? 'FyneCine' }} para Android</h1>
         
         <p class="app-hero-desc">
-            Filmes, séries completas, canais ao vivo de esportes e filmes 24h. Streaming de alta velocidade em Full HD, sem travamentos e com suporte à transmissão direta para sua TV.
+            Assista a milhares de filmes, séries, canais ao vivo de esportes, canais de filmes e muito mais. Transmita diretamente para sua TV com suporte a Chromecast e streaming de alta velocidade.
         </p>
 
         <div class="download-action-box">
@@ -343,41 +344,43 @@
             @endif
 
             <div class="app-meta-info">
+                <span><i class="fas fa-check-shield"></i> Verificado & Seguro</span>
                 <span><i class="fas fa-microchip"></i> Android 5.0+</span>
+                <span><i class="fas fa-cast"></i> Transmissão para TV</span>
             </div>
         </div>
 
-        <!-- Recursos e Poderes do App -->
+        <!-- Recursos do App -->
         <div class="features-grid">
             <div class="feature-card">
-                <div class="icon-box"><i class="fas fa-tv"></i></div>
-                <h4>Transmissão para TV</h4>
-                <p>Espelhe e transmita filmes, séries e canais diretamente do smartphone para sua Smart TV ou Chromecast com um clique.</p>
+                <div class="icon-box"><i class="fas fa-bolt"></i></div>
+                <h4>Player Otimizado</h4>
+                <p>Carregamento instantâneo com suporte a múltiplos servidores e players rápidos.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon-box"><i class="fas fa-cast"></i></div>
+                <h4>Transmita para TV</h4>
+                <p>Envie o conteúdo direto para sua Smart TV via Chromecast ou transmissão de tela.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon-box"><i class="fas fa-satellite-dish"></i></div>
+                <h4>Canais ao Vivo</h4>
+                <p>Assista a canais de TV ao vivo, incluindo canais abertos, esportes e entretenimento.</p>
             </div>
             <div class="feature-card">
                 <div class="icon-box"><i class="fas fa-futbol"></i></div>
-                <h4>Canais Ao Vivo & Esportes</h4>
-                <p>Acompanhe os principais jogos ao vivo, campeonatos de futebol, lutas e coberturas esportivas em tempo real.</p>
+                <h4>Esportes ao Vivo</h4>
+                <p>Canais exclusivos de esportes com futebol, UFC, NBA e mais, tudo em tempo real.</p>
             </div>
             <div class="feature-card">
                 <div class="icon-box"><i class="fas fa-film"></i></div>
-                <h4>Canais de Filmes 24 Horas</h4>
-                <p>Canais temáticos transmitindo 24h sem parar: ação, comédia, terror, clássicos e maratonas de séries.</p>
-            </div>
-            <div class="feature-card">
-                <div class="icon-box"><i class="fas fa-bolt"></i></div>
-                <h4>Player de Alta Velocidade</h4>
-                <p>Carregamento imediato sem travamentos, múltiplos servidores estáveis e suporte a áudio dublado e legendado.</p>
+                <h4>Canais de Filmes</h4>
+                <p>Canais 24h dedicados a filmes de ação, terror, comédia, clássicos e lançamentos.</p>
             </div>
             <div class="feature-card">
                 <div class="icon-box"><i class="fas fa-bell"></i></div>
                 <h4>Lançamentos Diários</h4>
-                <p>Atualizações diárias automáticas com os maiores lançamentos dos cinemas e novos episódios de séries.</p>
-            </div>
-            <div class="feature-card">
-                <div class="icon-box"><i class="fas fa-mobile-alt"></i></div>
-                <h4>Leve e Sem Travamentos</h4>
-                <p>Aplicativo otimizado para não pesar no seu Android, economizando bateria e dados móveis.</p>
+                <p>Notificações automáticas quando novos episódios e lançamentos forem adicionados.</p>
             </div>
         </div>
     </div>
@@ -390,17 +393,17 @@
         <div class="step-card">
             <span class="step-number">1</span>
             <h5>Baixe o APK</h5>
-            <p>Clique no botão de download acima para baixar o arquivo oficial de instalação no seu celular.</p>
+            <p>Clique no botão de download acima para baixar o arquivo oficial de instalação.</p>
         </div>
         <div class="step-card">
             <span class="step-number">2</span>
-            <h5>Permita a Instalação</h5>
-            <p>Se o Android solicitar, permita a instalação de aplicativos externos através das configurações.</p>
+            <h5>Permita Fontes Desconhecidas</h5>
+            <p>Se o Android solicitar, permita a instalação de aplicativos externos no navegador.</p>
         </div>
         <div class="step-card">
             <span class="step-number">3</span>
             <h5>Abra e Aproveite</h5>
-            <p>Abra o app para assistir a filmes, séries, canais ao vivo e transmitir direto para sua TV!</p>
+            <p>Conclua a instalação e abra o aplicativo para desfrutar de todo o catálogo grátis.</p>
         </div>
     </div>
 </div>
