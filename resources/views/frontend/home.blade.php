@@ -51,18 +51,19 @@
         padding-top: 0;
     }
 
-    /* ----- CARROSSEL HERO (MODERNO & CINEMATOGRÁFICO) ----- */
+    /* ----- HERO BANNER EM LARGURA TOTAL (PLANO DE FUNDO CINEMATOGRÁFICO) ----- */
     .hero-slider {
         position: relative;
-        width: calc(100% - 40px);
+        width: 100%;
         height: 52vw;
-        max-height: 480px;
-        min-height: 300px;
+        max-height: 540px;
+        min-height: 380px;
         overflow: hidden;
-        border-radius: 20px;
-        margin: 12px 20px 32px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
+        margin: 0 0 28px 0;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        background: #000000;
     }
     .slides-wrapper {
         display: flex;
@@ -74,47 +75,52 @@
         min-width: 100%;
         height: 100%;
         background-size: cover;
-        background-position: center 25%;
+        background-position: center 20%;
         position: relative;
         display: flex;
         align-items: flex-end;
-        padding: 36px 32px;
+        padding: 44px 36px 36px;
     }
     .slide::after {
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(0deg, #000000 0%, rgba(0,0,0,0.88) 35%, rgba(0,0,0,0.3) 70%, transparent 100%),
-                    linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.55) 45%, transparent 80%);
+        background: 
+            /* Dissolve suavemente no fundo preto do site na base */
+            linear-gradient(0deg, #000000 0%, rgba(0,0,0,0.92) 18%, rgba(0,0,0,0.5) 45%, transparent 100%),
+            /* Escurece a lateral esquerda para legibilidade de títulos */
+            linear-gradient(90deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 35%, rgba(0,0,0,0.2) 65%, transparent 100%),
+            /* Integração sutil com o header */
+            linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 25%);
     }
     .slide-content {
         position: relative;
         z-index: 2;
-        max-width: 440px;
+        max-width: 520px;
         width: 100%;
     }
-    .slide-content .badge {
-        display: inline-flex;
-        align-items: center;
-        background: rgba(255, 255, 255, 0.12);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        color: #f1f5f9;
-        font-size: 11px;
-        font-weight: 600;
-        padding: 4px 10px;
-        border-radius: 6px;
-        letter-spacing: 0.5px;
-        margin-bottom: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
     .slide-content h2 {
-        font-size: 32px;
+        font-size: 34px;
         font-weight: 800;
         line-height: 1.15;
         margin-bottom: 8px;
         color: #ffffff;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+        text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
+    }
+    .slide-content .meta-mini {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 13px;
+        color: #cbd5e1;
+        margin-bottom: 10px;
+    }
+    .slide-content .meta-mini .avaliacao {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: #fbbf24;
+        font-weight: 700;
     }
     .slide-content p {
         font-size: 14px;
@@ -124,11 +130,8 @@
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        margin-bottom: 16px;
-        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
-    }
-    .slide-content .meta-mini {
-        display: none;
+        margin-bottom: 18px;
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
     }
     .btn-play {
         background: #ffffff;
@@ -144,7 +147,7 @@
         gap: 8px;
         transition: all 0.2s ease;
         text-decoration: none;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
     }
     .btn-play:hover {
         background: #e2e8f0;
@@ -158,82 +161,90 @@
         left: 50%;
         transform: translateX(-50%);
         display: flex;
-        gap: 6px;
+        gap: 8px;
         z-index: 5;
     }
     .slider-dots span {
         width: 8px;
         height: 8px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.35);
         cursor: pointer;
         transition: all 0.25s ease;
     }
     .slider-dots span.active {
         background: #ffffff;
-        width: 22px;
+        width: 24px;
         border-radius: 10px;
     }
 
     /* Slider responsive */
     @media (max-width: 600px) {
         .hero-slider {
-            height: 60vw;
-            max-height: 320px;
-            margin: 8px 12px 20px;
-            width: calc(100% - 24px);
-            border-radius: 16px;
+            height: 75vw;
+            min-height: 320px;
+            max-height: 400px;
+            margin: 0 0 18px 0;
         }
         .slide {
-            padding: 16px 18px;
-            align-items: flex-end;
+            padding: 20px 16px;
         }
-        .slide-content { max-width: 100%; }
-        .slide-content h2 { font-size: 22px; }
-        .slide-content p { font-size: 12px; margin-bottom: 12px; }
-        .btn-play { padding: 8px 18px; font-size: 13px; }
-    }
-        .slide-content .badge,
-        .slide-content p { display: none; }
         .slide-content h2 {
-            font-size: 18px;
-            margin-bottom: 2px;
-            line-height: 1.2;
+            font-size: 22px;
+            margin-bottom: 6px;
         }
         .slide-content .meta-mini {
-            display: flex;
-            align-items: center;
-            gap: 10px;
             font-size: 12px;
-            color: #cbd5e0;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+            gap: 8px;
         }
-        .slide-content .meta-mini .avaliacao {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            color: #fbbf24;
+        .slide-content p {
+            font-size: 12px;
+            -webkit-line-clamp: 2;
+            margin-bottom: 12px;
         }
-        .btn-play { padding: 5px 16px; font-size: 12px; gap: 4px; }
-        .slider-dots { bottom: 8px; }
-        .slider-dots span { width: 6px; height: 6px; }
-        .slider-dots span.active { width: 18px; }
+        .btn-play {
+            padding: 8px 18px;
+            font-size: 13px;
+        }
     }
+
     @media (min-width: 601px) and (max-width: 1024px) {
-        .hero-slider { height: 45vw; max-height: 380px; }
-        .slide-content h2 { font-size: 26px; }
+        .hero-slider {
+            height: 48vw;
+            max-height: 440px;
+        }
+        .slide {
+            padding: 32px 28px;
+        }
+        .slide-content h2 {
+            font-size: 28px;
+        }
     }
+
     @media (min-width: 1025px) {
         .hero-slider {
-            max-height: 480px;
-            margin: 16px 40px 36px;
-            width: calc(100% - 80px);
-            border-radius: 28px;
+            max-height: 560px;
+            height: 44vw;
+            margin: 0 0 32px 0;
         }
-        .slide-content { max-width: 420px; }
-        .slide-content h2 { font-size: 36px; }
-        .slide-content p { font-size: 15px; -webkit-line-clamp: 3; }
-        .btn-play { padding: 10px 32px; font-size: 16px; }
+        .slide {
+            padding: 50px 48px 44px;
+        }
+        .slide-content {
+            max-width: 480px;
+        }
+        .slide-content h2 {
+            font-size: 38px;
+        }
+        .slide-content p {
+            font-size: 15px;
+            -webkit-line-clamp: 3;
+        }
+        .btn-play {
+            padding: 12px 28px;
+            font-size: 15px;
+        }
     }
 
     /* ----- SEÇÕES ----- */
@@ -353,14 +364,13 @@
                 @endphp
                 <div class="slide" style="background-image: url('{{ $image }}')">
                     <div class="slide-content">
-                        <span class="badge">{{ $tipo }}</span>
                         <h2>{{ $title }}</h2>
-                        <p>{{ $overview }}</p>
                         <div class="meta-mini">
                             <span class="avaliacao"><i class="fas fa-star"></i> {{ number_format($nota, 1) }}</span>
                             @if($ano)<span>{{ $ano }}</span>@endif
                             @if($duracao)<span>{{ $duracao }} min</span>@endif
                         </div>
+                        <p>{{ $overview }}</p>
                         <a href="{{ $url }}" class="btn-play"><i class="fas fa-play"></i> Assistir</a>
                     </div>
                 </div>
