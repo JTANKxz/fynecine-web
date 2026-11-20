@@ -30,7 +30,7 @@
     <!-- Google Sitelinks Searchbox (Schema.org JSON-LD) -->
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
+      "@@context": "https://schema.org",
       "@type": "WebSite",
       "name": "{{ $siteName }}",
       "url": "{{ url('/') }}",

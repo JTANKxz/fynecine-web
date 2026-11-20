@@ -32,7 +32,7 @@
     <!-- Google Rich Snippet (Schema.org JSON-LD) -->
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
+      "@@context": "https://schema.org",
       "@type": "Movie",
       "name": "{{ addslashes($movie->title) }}",
       "url": "{{ url()->current() }}",
