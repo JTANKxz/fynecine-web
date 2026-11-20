@@ -59,7 +59,7 @@
         align-items: center;
         gap: 8px;
         background: #0a0a0a;
-        border: 1px solid rgba(124, 58, 237, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 30px;
         padding: 6px 16px 6px 12px;
         color: #b0b8c4;
@@ -287,20 +287,20 @@
 
     /* Estilo de Card adaptado da home */
     .catalogo-grid .card {
-        border-radius: 12px;
+        border-radius: 10px;
         overflow: hidden;
-        background: #0a0a0a;
-        transition: transform 0.25s, box-shadow 0.25s;
+        background: #111116;
+        transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
         cursor: pointer;
         position: relative;
         aspect-ratio: 2 / 3;
-        border: 1px solid rgba(124, 58, 237, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.06);
         width: 100%;
     }
     .catalogo-grid .card:hover {
-        transform: scale(1.02);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
-        border-color: #7c3aed;
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.95);
+        border-color: rgba(255, 255, 255, 0.22);
     }
     .catalogo-grid .card-img {
         width: 100%;

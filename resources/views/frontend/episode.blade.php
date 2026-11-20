@@ -68,7 +68,7 @@
         align-items: flex-end;
         padding: 30px 24px 0;
         z-index: 10;
-        border-bottom: 2px solid #7c3aed;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
     .details-backdrop::after {
         content: '';
@@ -271,29 +271,30 @@
         min-width: 0;
     }
     .card-wrapper.active .card {
-        border-color: #a855f7;
-        box-shadow: 0 0 15px rgba(124, 58, 237, 0.5);
+        border: 2px solid #ffffff;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.9);
     }
     .card-wrapper.active .card-title {
-        color: #a855f7;
+        color: #ffffff;
+        font-weight: 700;
     }
     .card-wrapper:hover {
-        transform: scale(1.02);
+        transform: translateY(-2px);
     }
 
     /* Card (apenas a imagem) */
     .card {
-        border-radius: 12px;
+        border-radius: 10px;
         overflow: hidden;
-        background: #0a0a0a;
+        background: #111116;
         position: relative;
         aspect-ratio: 16 / 9; /* Episódios usam wide */
-        border: 1px solid rgba(124, 58, 237, 0.15);
-        transition: border-color 0.3s, box-shadow 0.3s;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
         width: 100%;
     }
     .card-wrapper:hover .card {
-        border-color: #7c3aed;
+        border-color: rgba(255, 255, 255, 0.25);
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
     }
     .card-img {

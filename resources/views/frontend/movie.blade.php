@@ -69,7 +69,7 @@
         align-items: flex-end;
         padding: 30px 24px 0;
         z-index: 10;
-        border-bottom: 2px solid #7c3aed;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
     .details-backdrop::after {
         content: '';
@@ -234,7 +234,7 @@
         background-size: cover;
         background-position: center;
         margin-bottom: 6px;
-        border: 2px solid #7c3aed;
+        border: 1px solid rgba(255, 255, 255, 0.15);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -302,16 +302,17 @@
     .card {
         border-radius: 12px;
         overflow: hidden;
-        background: #0a0a0a;
+        background: #111116;
         position: relative;
         aspect-ratio: 2 / 3;
-        border: 1px solid rgba(124, 58, 237, 0.15);
-        transition: border-color 0.3s, box-shadow 0.3s;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
         width: 100%;
     }
     .card-wrapper:hover .card {
-        border-color: #7c3aed;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
+        border-color: rgba(255, 255, 255, 0.22);
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.95);
     }
     .card-img {
         width: 100%;
@@ -567,7 +568,6 @@
         <!-- CONTEÚDO SOBREPOSTO -->
         <div class="details-content-wrapper">
             <div class="details-content">
-                <span class="badge">Filme</span>
                 <h1>{{ $movie->title }}</h1>
                 <div class="meta">
                     <span class="avaliacao"><i class="fas fa-star"></i> {{ number_format($movie->rating ?? 0, 1) }}</span>

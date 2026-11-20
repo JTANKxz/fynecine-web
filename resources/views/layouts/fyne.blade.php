@@ -217,7 +217,7 @@
             background: #0a0a0a;
             border-radius: 16px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
-            border: 1px solid #7c3aed;
+            border: 1px solid rgba(255, 255, 255, 0.12);
             overflow: hidden;
             pointer-events: none;
             visibility: hidden;
@@ -310,11 +310,11 @@
         .btn-salvar {
             background: rgba(255, 255, 255, 0.08);
             color: #fff;
-            border: 1px solid rgba(124, 58, 237, 0.2) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
         }
         .btn-salvar:hover {
-            background: rgba(124, 58, 237, 0.25);
-            border-color: #7c3aed !important;
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.25) !important;
         }
 
         @media (max-width: 480px) {
