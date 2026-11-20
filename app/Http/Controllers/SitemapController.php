@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Movie;
 use App\Models\Serie;
-use App\Models\Episode;
 use App\Models\Genre;
 use Illuminate\Support\Facades\Cache;
 
@@ -23,11 +22,20 @@ class SitemapController extends Controller
             }])->latest('updated_at')->get();
             $genres = Genre::select('slug', 'updated_at')->get();
 
-            return view('sitemap.index', [
+            $xml = view('sitemap.index', [
                 'movies' => $movies,
                 'series' => $series,
                 'genres' => $genres,
             ])->render();
+
+            // Salva também o arquivo físico em public/sitemap.xml para Nginx/Apache
+            try {
+                file_put_contents(public_path('sitemap.xml'), $xml);
+            } catch (\Throwable $e) {
+                // Silencioso se não houver permissão de escrita
+            }
+
+            return $xml;
         });
 
         return response($content, 200)
