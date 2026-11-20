@@ -3,50 +3,65 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\Movie;
-use App\Models\Serie;
-use App\Models\Genre;
+use Illuminate\Support\Facades\DB;
 
 class GenerateSitemap extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'sitemap:generate';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Gera o arquivo físico sitemap.xml na pasta public para o Google';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(): int
     {
-        $this->info('Consultando filmes, séries e episódios...');
+        $this->info('Consultando catálogo de filmes e séries...');
 
-        $movies = Movie::select('slug', 'updated_at')->latest('updated_at')->get();
-        $series = Serie::select('id', 'slug', 'updated_at')->with(['seasons.episodes' => function ($q) {
-            $q->select('id', 'season_id', 'episode_number', 'updated_at');
-        }])->latest('updated_at')->get();
-        $genres = Genre::select('slug', 'updated_at')->get();
+        $movies = DB::table('movies')
+            ->whereNotNull('slug')
+            ->where('slug', '!=', '')
+            ->select('slug', 'updated_at')
+            ->orderByDesc('updated_at')
+            ->get();
+
+        $series = DB::table('series')
+            ->whereNotNull('slug')
+            ->where('slug', '!=', '')
+            ->select('slug', 'updated_at')
+            ->orderByDesc('updated_at')
+            ->get();
+
+        $genres = DB::table('genres')
+            ->whereNotNull('slug')
+            ->where('slug', '!=', '')
+            ->select('slug', 'updated_at')
+            ->get();
+
+        $episodes = DB::table('episodes')
+            ->join('seasons', 'episodes.season_id', '=', 'seasons.id')
+            ->join('series', 'seasons.series_id', '=', 'series.id')
+            ->whereNotNull('series.slug')
+            ->where('series.slug', '!=', '')
+            ->whereNotNull('seasons.season_number')
+            ->whereNotNull('episodes.episode_number')
+            ->select(
+                'series.slug as serie_slug',
+                'seasons.season_number',
+                'episodes.episode_number',
+                'episodes.updated_at'
+            )
+            ->limit(5000)
+            ->get();
 
         $xml = view('sitemap.index', [
-            'movies' => $movies,
-            'series' => $series,
-            'genres' => $genres,
+            'movies'   => $movies,
+            'series'   => $series,
+            'genres'   => $genres,
+            'episodes' => $episodes,
         ])->render();
 
         $destination = public_path('sitemap.xml');
         file_put_contents($destination, $xml);
 
         $this->info("Sitemap gerado com sucesso em: {$destination}");
-        $this->info("Total: {$movies->count()} filmes, {$series->count()} séries.");
+        $this->info("Total: {$movies->count()} filmes, {$series->count()} séries, {$episodes->count()} episódios.");
 
         return Command::SUCCESS;
     }
